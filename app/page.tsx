@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Nav from "@/components/nav";
 import Main from "@/components/main/main";
 import Ai from "@/components/main/ai";
@@ -7,10 +7,40 @@ import Planet from "@/components/main/planet";
 import Profile from "@/components/main/profile";
 import Settings from "@/components/main/settings";
 import Image from "next/image";
+import { socket } from "@/socket";
 
 export default function Home() {
   const [page, setPage] = useState("main");
   const [productKeyVerified, setProductKeyVerified] = useState<boolean>(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [transport, setTransport] = useState("N/A");
+
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+      setTransport(socket.io.engine.transport.name);
+      socket.io.engine.on("upgrade", (transport) => {
+        setTransport(transport.name);
+      });
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+      setTransport("N/A");
+    }
+
+    if (socket.connected) {
+      onConnect();
+    }
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+    };
+  }, []);
 
   const renderContent = () => {
     switch (page) {
@@ -29,11 +59,11 @@ export default function Home() {
 
   if (!productKeyVerified) {
     return (
-      <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-900">
+      <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-950">
         <Image width={100} height={100} alt="" src="./roketLogo2.svg" />
         <div className="flex h-8 my-12">
           <input
-            className="bg-gray-950 rounded-lg border border-gray-800 py-1 px-3 outline-none placeholder:text-sm text-white"
+            className="bg-gray-900 rounded-lg border border-gray-800 py-1 px-3 outline-none placeholder:text-sm text-white"
             placeholder="PRODUCT KEY"
           />
           <button onClick={() => setProductKeyVerified(true)}>

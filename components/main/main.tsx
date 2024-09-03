@@ -1,10 +1,37 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { socket } from "@/socket";
 
 export default function Main() {
+  const [status, setStatus] = useState("Start Task");
+  // const startTask = async () => {
+  //   await axios.post("/api/startService", {
+  //     login: {
+  //       username: localStorage.getItem("LinkedInUsername"),
+  //       password: localStorage.getItem("LinkedInPassword"),
+  //     },
+  //   });
+  // };
+  //
+  const startTask = () => {
+    socket.emit(
+      "servicestart",
+      localStorage.getItem("LinkedInUsername"),
+      localStorage.getItem("LinkedInPassword"),
+    );
+  };
+
+  socket.on("running", () => {
+    setStatus("Running...");
+  });
+
+  socket.on("stopped", () => {
+    setStatus("Start Task");
+  });
+
   return (
     <div className="w-full h-full flex flex-col">
-      <h1 className="text-2xl">Jobs</h1>
+      <h1 className="text-2xl">Tasks</h1>
       <div id="info" className="mt-4 flex justify-between">
         <div className="flex">
           <h1 className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800">
@@ -18,7 +45,10 @@ export default function Main() {
           </h1>
         </div>
         <div className="flex">
-          <button className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800 flex items-center mx-4">
+          <button
+            onClick={() => startTask()}
+            className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800 flex items-center mx-4"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -28,11 +58,11 @@ export default function Main() {
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" />
             </svg>
-            <p>Start Task</p>
+            <p>{status}</p>
           </button>
           <input
-            className="rounded-lg border border-gray-800 bg-gray-900 px-4 outline-none"
-            placeholder="Filter Task"
+            className="rounded-lg border border-gray-800 bg-gray-900 px-4 outline-none h-full"
+            placeholder="Filter Tasks"
           />
         </div>
       </div>
