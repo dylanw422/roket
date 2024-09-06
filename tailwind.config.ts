@@ -1,3 +1,4 @@
+import { transform } from "next/dist/build/swc";
 import type { Config } from "tailwindcss";
 
 const config = {
@@ -58,9 +59,6 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      boxShadow: {
-        md: "0 0 15px 3px rgba(17, 24, 39, 1)",
-      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -70,10 +68,23 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        slideIn: {
+          "0%": { transform: "translateX(100%)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
+        },
+        appear: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        slideIn: "slideIn 0.5s ease-out forwards",
+        appear: "appear 0.5s ease-out",
+      },
+      boxShadow: {
+        md: "0 0 10px 0px",
       },
     },
   },
@@ -81,4 +92,3 @@ const config = {
 } satisfies Config;
 
 export default config;
-

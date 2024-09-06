@@ -69,7 +69,7 @@ export default function Profile() {
         </div>
         <button
           onClick={() => saveToLocalStorage()}
-          className="px-4 py-2 rounded-lg bg-pink-500"
+          className="px-4 py-2 rounded-lg bg-violet-500"
         >
           {saved == 0 ? "Save" : "Saved"}
         </button>

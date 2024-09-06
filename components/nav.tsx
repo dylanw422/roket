@@ -13,10 +13,10 @@ export default function Nav({ updatePage, resetKey }: any) {
         width={40}
         height={40}
         alt=""
-        src="./roketLogo2.svg"
+        src="./roketLogo.svg"
       />
       <div id="buttons" className="h-full flex flex-col justify-between">
-        <div id="navigation" className="space-y-6 py-8 flex flex-col ">
+        <div id="navigation" className="space-y-6 py-4 flex flex-col ">
           <button
             onClick={() => {
               updatePage("main"), setActiveTab("main");

@@ -60,7 +60,7 @@ export default function Home() {
   if (!productKeyVerified) {
     return (
       <div className="w-full h-screen flex flex-col justify-center items-center bg-gray-950">
-        <Image width={100} height={100} alt="" src="./roketLogo2.svg" />
+        <Image width={100} height={100} alt="" src="./roketLogo.svg" />
         <div className="flex h-8 my-12">
           <input
             className="bg-gray-900 rounded-lg border border-gray-800 py-1 px-3 outline-none placeholder:text-sm text-white"
@@ -77,7 +77,7 @@ export default function Home() {
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right w-12 p-1 text-white ml-2 rounded-lg border border-gray-800 bg-pink-500 h-full"
+              className="icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right w-12 p-1 text-white ml-2 rounded-lg border border-gray-800 bg-violet-500 h-full"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
               <path d="M5 12l14 0" />

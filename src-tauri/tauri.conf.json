@@ -57,10 +57,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 800,
+        "height": 700,
         "resizable": true,
         "title": "Roket",
-        "width": 1500
+        "width": 1200
       }
     ]
   }

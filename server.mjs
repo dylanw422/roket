@@ -16,6 +16,7 @@ app.prepare().then(() => {
 
   io.on("connection", (socket) => {
     console.log("a user connected.");
+
     socket.on("servicestart", (un, pw) => {
       LinkedInApply(socket, un, pw);
     });
