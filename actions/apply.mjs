@@ -1,5 +1,6 @@
 import { chromium, devices } from "playwright";
 import { solveCaptcha } from "./captchaSolver.mjs";
+import { jobFinder } from "./jobFinder.mjs";
 
 export default async function LinkedInApply(socket, un, pw) {
   try {
@@ -21,27 +22,17 @@ export default async function LinkedInApply(socket, un, pw) {
     await submit.click();
     socket.emit("process", "Login Successful.");
 
-    // MAYBE REDIRECTED TO SOLVE CAPTCHA
-    await page.waitForURL(
-      /https:\/\/www\.linkedin\.com\/checkpoint\/challenge\/.*/,
-    );
-    socket.emit("process", "Preparing Captcha...");
+    // CHECK IF REDIRECTED TO CAPTCHA
+    const captchaRedirected = page.url().includes("/checkpoint/challenge");
+    if (captchaRedirected) {
+      socket.emit("process", "Preparing Captcha...");
+      await solveCaptcha(page, browser, socket);
+    }
 
-    await solveCaptcha(page, socket);
+    // PROCEED WITH JOB APPLICATION
+    await jobFinder(page, browser, socket);
 
-    // CONTINUE WITH JOB SEARCH
-    // socket.emit("process", "Searching for jobs...");
-    // await page
-    //   .locator(".search-global-typeahead__input ")
-    //   .fill("Software Engineer");
-    //
-    // await page.keyboard.press("Enter");
-    //
-    // await page
-    //   .locator("button.artdeco-pill.search-reusables__filter-pill-button")
-    //   .nth(0)
-    //   .click();
-    //
+    // Optionally close browser after a delay
     // setTimeout(async () => {
     //   await browser.close();
     //   socket.emit("stopped");

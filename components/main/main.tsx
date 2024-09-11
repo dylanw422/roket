@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { socket } from "@/socket";
+import { Spinner } from "../ui/spinner";
 
 export default function Main() {
   const [status, setStatus] = useState("Start Task");
   const [process, setProcess] = useState("Starting service...");
   const [captchaImg, setCaptchaImg] = useState<string | null>(null);
+  const [captchaProcess, setCaptchaProcess] = useState<number>(0);
 
   const startTask = () => {
     socket.emit(
@@ -30,6 +32,13 @@ export default function Main() {
 
   socket.on("process", (msg) => {
     setProcess(msg);
+    if (msg === "Preparing Captcha...") {
+      setCaptchaProcess(1);
+    }
+
+    if (msg === "Captcha Solved!") {
+      setCaptchaProcess(2);
+    }
   });
 
   socket.on("screenshot", (b64) => {
@@ -39,40 +48,45 @@ export default function Main() {
   socket.on("error", (msg) => {
     setStatus("Start Task");
     setCaptchaImg(null);
-    setProcess(msg);
+    setCaptchaProcess(0);
   });
-
-  console.log(captchaImg);
 
   return (
     <div className="w-full h-full flex flex-col">
-      {captchaImg ? (
+      {captchaProcess == 1 ? (
         <div
           className="absolute top-0 left-0 z-10 flex flex-col justify-center items-center
           w-full h-full bg-gray-950 bg-opacity-50 backdrop-blur-sm animate-appear"
         >
-          <h1 className="text-xl py-2">Solve the captcha</h1>
-          <div className="relative">
-            <img src={`data:image/png;base64,${captchaImg}`} alt="Captcha" />
-            <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 pb-3 pt-9">
-              {[1, 2, 3, 4, 5, 6].map((squareNumber) => {
-                return (
-                  <div
-                    key={squareNumber}
-                    className="bg-transparent hover:bg-black/10 cursor-pointer text-black"
-                    onClick={() => captchaAnswer(squareNumber)}
-                  >
-                    {squareNumber}
-                  </div>
-                );
-              })}
+          {captchaProcess == 1 && captchaImg == null ? (
+            <Spinner className="text-white" />
+          ) : (
+            <div className="relative">
+              <img
+                className="scale-125"
+                src={`data:image/png;base64,${captchaImg}`}
+                alt="Captcha"
+              />
+              <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 pb-3 pt-9 scale-125">
+                {[1, 2, 3, 4, 5, 6].map((squareNumber) => {
+                  return (
+                    <div
+                      key={squareNumber}
+                      className="bg-transparent hover:bg-black/20 cursor-pointer text-black"
+                      onClick={() => captchaAnswer(squareNumber)}
+                    ></div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ) : null}
       {status == "Running..." ? (
         <div className="absolute bottom-0 right-0 z-10 m-4 w-1/4 bg-gray-900 rounded-lg border border-gray-800 p-4 animate-slideIn shadow-black shadow-md">
-          <p className="text-gray-300">Status:</p>
+          <p className="text-gray-300">
+            {process.includes("@") ? "Applying To:" : "Status:"}
+          </p>
           <p className="text-xs text-gray-400 pt-2">{process}</p>
         </div>
       ) : null}

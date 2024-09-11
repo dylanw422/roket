@@ -1,5 +1,5 @@
 // captchaSolver.js
-export async function solveCaptcha(page, socket) {
+export async function solveCaptcha(page, browser, socket) {
   try {
     // NESTED IFRAMES TO FIND CAPTCHA
     const iframe1 = page.frameLocator("#captcha-internal");
@@ -32,11 +32,17 @@ export async function solveCaptcha(page, socket) {
 
     while (!captchaSolved) {
       // Intercept network requests for CAPTCHA solving
-      const responsePromise = page.waitForResponse(
-        (response) =>
-          response.url().includes("client-api.arkoselabs.com/fc/ca/") &&
-          response.status() === 200,
-      );
+      const responsePromise = page
+        .waitForResponse(
+          (response) =>
+            response.url().includes("client-api.arkoselabs.com/fc/ca/") &&
+            response.status() === 200,
+          { timeout: 30000 },
+        )
+        .catch(async () => {
+          socket.emit("error", "Timeout Error: Waiting for CAPTCHA response.");
+          await browser.close();
+        });
 
       // Check if the timeout has been reached
       if (Date.now() - startTime > timeout) {
@@ -48,7 +54,7 @@ export async function solveCaptcha(page, socket) {
       let gameboard = activeFrame.locator("#game");
 
       if (!firstPass) {
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(1500);
       }
 
       // Capture and process the screenshot
@@ -86,7 +92,6 @@ export async function solveCaptcha(page, socket) {
         responseBody.solved === false &&
         responseBody.response === "answered"
       ) {
-        console.log("needs to click Try Again btn.");
         const tryAgainBtn = activeFrame.locator("#wrong_children_button");
         await tryAgainBtn.waitFor({
           state: "visible",
@@ -94,6 +99,7 @@ export async function solveCaptcha(page, socket) {
         });
         await tryAgainBtn.click();
         activeFrame = activeFrame == iframe5 ? iframe6 : iframe5;
+        firstPass = true;
       }
 
       firstPass = false;
@@ -101,8 +107,6 @@ export async function solveCaptcha(page, socket) {
 
     socket.emit("process", "Captcha Solved!");
   } catch (err) {
-    console.error("Captcha solving error: ", err);
     socket.emit("error", "Error during CAPTCHA solving.");
-    throw err;
   }
 }
