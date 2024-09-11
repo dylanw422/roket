@@ -50,6 +50,14 @@ export async function jobFinder(page, browser, socket) {
 
     console.log(jobSalary, jobSchedule, jobLocation);
 
+    socket.emit("job", {
+      title: jobTitle.trim(),
+      company: companyName.trim(),
+      salary: jobSalary.trim(),
+      location: jobLocation.trim(),
+      schedule: jobSchedule.trim(),
+    });
+
     // START APPLICATION: CLICK APPLY BUTTON
     let applyBtn = await page
       .locator(".jobs-apply-button.artdeco-button")
@@ -111,17 +119,9 @@ export async function jobFinder(page, browser, socket) {
     }
 
     // SUBMIT APPLICATION STEP
-    if (await submitBtn.isVisible()) {
-      await submitBtn.click();
-    }
-
-    socket.emit("job", {
-      title: jobTitle.trim(),
-      company: companyName.trim(),
-      salary: jobSalary.trim(),
-      location: jobLocation.trim(),
-      schedule: jobSchedule.trim(),
-    });
+    // if (await submitBtn.isVisible()) {
+    //   await submitBtn.click();
+    // }
 
     // CLOSE MODAL
     let closeBtn = await page.locator("[data-test-modal-close-btn]");

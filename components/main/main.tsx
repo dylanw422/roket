@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { socket } from "@/socket";
 import { Spinner } from "../ui/spinner";
 
@@ -62,9 +62,15 @@ export default function Main() {
     setCaptchaProcess(0);
   });
 
-  socket.on("job", (obj) => {
-    setRowsFromSocket((prevState) => [obj, ...prevState]);
-    console.log("socket event", obj);
+  useEffect(() => {
+    socket.on("job", (obj) => {
+      setRowsFromSocket((prevState) => [obj, ...prevState]);
+      console.log("socket event", obj);
+    });
+
+    return () => {
+      socket.off("job");
+    };
   });
 
   console.log(rowsFromSocket);
