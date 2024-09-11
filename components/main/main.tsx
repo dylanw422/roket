@@ -65,15 +65,12 @@ export default function Main() {
   useEffect(() => {
     socket.on("job", (obj) => {
       setRowsFromSocket((prevState) => [obj, ...prevState]);
-      console.log("socket event", obj);
     });
 
     return () => {
       socket.off("job");
     };
-  });
-
-  console.log(rowsFromSocket);
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col">
