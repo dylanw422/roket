@@ -1,13 +1,24 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { socket } from "@/socket";
 import { Spinner } from "../ui/spinner";
+
+interface Job {
+  title: string;
+  company: string;
+  salary: string;
+  location: string;
+  schedule: string;
+  status: string;
+}
 
 export default function Main() {
   const [status, setStatus] = useState("Start Task");
   const [process, setProcess] = useState("Starting service...");
   const [captchaImg, setCaptchaImg] = useState<string | null>(null);
   const [captchaProcess, setCaptchaProcess] = useState<number>(0);
+  const [rowsFromSocket, setRowsFromSocket] = useState<Job[]>([]);
+  const [rowsFromDb, setRowsFromDb] = useState<Job[]>([]);
 
   const startTask = () => {
     socket.emit(
@@ -45,11 +56,18 @@ export default function Main() {
     setCaptchaImg(b64);
   });
 
-  socket.on("error", (msg) => {
+  socket.on("error", () => {
     setStatus("Start Task");
     setCaptchaImg(null);
     setCaptchaProcess(0);
   });
+
+  socket.on("job", (obj) => {
+    setRowsFromSocket((prevState) => [obj, ...prevState]);
+    console.log("socket event", obj);
+  });
+
+  console.log(rowsFromSocket);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -139,22 +157,37 @@ export default function Main() {
           />
         </div>
       </div>
-      <div className="flex flex-col flex-1 mt-8 text-xs">
+      <div className="flex flex-col flex-1 mt-8 text-xs overflow-y-scroll">
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-800 text-gray-500">
-              <th className="py-2 font-normal">Company</th>
+              <th className="font-normal py-2">Position</th>
+              <th className="font-normal">Company</th>
               <th className="font-normal">Job Type</th>
-              <th className="font-normal">Experience</th>
               <th className="font-normal">Salary</th>
               <th className="font-normal">Remote</th>
               <th className="font-normal">Status</th>
             </tr>
           </thead>
+          {rowsFromSocket.map((job, index) => (
+            <tr className="text-center border-b border-gray-900" key={index}>
+              <td className="py-4">{job.title}</td>
+              <td>{job.company}</td>
+              <td>{job.schedule}</td>
+              <td>{job.salary}</td>
+              <td>{job.location}</td>
+              <td>{job.status}</td>
+            </tr>
+          ))}
+          {rowsFromDb.map((job, index) => (
+            <tr key={index}></tr>
+          ))}
         </table>
-        <div className="w-full h-full flex justify-center items-center">
-          <h1 className="text-gray-500">No tasks to display.</h1>
-        </div>
+        {rowsFromSocket.length === 0 && rowsFromDb.length === 0 ? (
+          <div className="w-full h-full flex justify-center items-center">
+            <h1 className="text-gray-500">No tasks to display.</h1>
+          </div>
+        ) : null}
       </div>
     </div>
   );
