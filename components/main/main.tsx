@@ -104,32 +104,34 @@ export default function Main() {
         </div>
       ) : null}
       {status == "Running..." ? (
-        <div className="absolute bottom-0 right-0 z-10 m-4 w-1/4 bg-gray-900 rounded-lg border border-gray-800 p-4 animate-slideIn shadow-black shadow-md">
-          <p className="text-gray-300">
+        <div className="absolute bottom-0 right-0 z-10 m-4 w-1/4 bg-white dark:bg-gray-900 rounded-lg border border-neutral-300 dark:border-gray-800 p-4 animate-slideIn shadow-black/20 dark:shadow-black shadow-md">
+          <p className="dark:text-gray-300">
             {process.includes("@") ? "Applying To:" : "Status:"}
           </p>
-          <p className="text-xs text-gray-400 pt-2">{process}</p>
+          <p className="text-xs text-neutral-500 dark:text-gray-400 pt-2">
+            {process}
+          </p>
         </div>
       ) : null}
       <h1 className="text-2xl">Tasks</h1>
       <div id="info" className="mt-4 flex justify-between">
-        <div className="flex">
-          <h1 className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800">
+        <div className="flex space-x-4">
+          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
             1239 Tasks
           </h1>
-          <h1 className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800 mx-4">
+          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
             824 Success
           </h1>
-          <h1 className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-800">
+          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
             415 Fails
           </h1>
         </div>
-        <div className="flex">
+        <div className="flex space-x-4">
           <button
             onClick={() => {
               startTask();
             }}
-            className="px-4 py-2 rounded-lg border-t border-gray-700 bg-gray-900 flex items-center mx-4 shadow-black shadow-md"
+            className="px-4 py-2 rounded-lg border-t border-white dark:border-gray-700 bg-neutral-50 dark:bg-gray-900 flex items-center shadow-neutral-300 shadow-md dark:shadow-black dark:shadow-md hover:bg-white dark:hover:bg-gray-800 transition duration-300"
           >
             {status == "Running..." ? (
               <svg
@@ -155,15 +157,15 @@ export default function Main() {
             <p>{status}</p>
           </button>
           <input
-            className="rounded-lg border border-gray-800 bg-gray-900 px-4 outline-none h-full"
+            className="rounded-lg border dark:border-gray-800 dark:bg-gray-900 px-4 outline-none h-full"
             placeholder="Filter Tasks"
           />
         </div>
       </div>
       <div className="flex flex-col flex-1 mt-8 text-xs overflow-y-scroll">
-        <table className="w-full">
+        <table className="table-fixed w-full">
           <thead>
-            <tr className="border-b border-gray-800 text-gray-500">
+            <tr className="border-b border-neutral-300 dark:border-gray-800 text-gray-500">
               <th className="font-normal py-2">Position</th>
               <th className="font-normal">Company</th>
               <th className="font-normal">Job Type</th>
@@ -173,7 +175,10 @@ export default function Main() {
             </tr>
           </thead>
           {rowsFromSocket.map((job, index) => (
-            <tr className="text-center border-b border-gray-900" key={index}>
+            <tr
+              className="text-center border-b border-neutral-300 dark:border-gray-900"
+              key={index}
+            >
               <td className="py-4">{job.title}</td>
               <td>{job.company}</td>
               <td>{job.schedule}</td>

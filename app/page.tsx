@@ -9,12 +9,14 @@ import Settings from "@/components/main/settings";
 import Image from "next/image";
 import { socket } from "@/socket";
 import Locked from "@/components/main/locked";
+import { useTheme } from "next-themes";
 
 export default function Home() {
   const [page, setPage] = useState("main");
   const [productKeyVerified, setProductKeyVerified] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState(false);
   const [transport, setTransport] = useState("N/A");
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     function onConnect() {
@@ -43,6 +45,21 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === "n") {
+        setTheme(theme === "dark" ? "light" : "dark");
+        console.log(theme);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [theme, setTheme]);
+
   const renderContent = () => {
     switch (page) {
       case "main":
@@ -63,7 +80,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-screen flex bg-gray-950 text-white text-sm">
+    <div className="w-full h-screen flex bg-neutral-100 dark:bg-gray-950 text-neutral-800 dark:text-white text-sm">
       <Nav updatePage={setPage} resetKey={setProductKeyVerified} />
       <div className="w-full h-screen p-4">{renderContent()}</div>
     </div>
