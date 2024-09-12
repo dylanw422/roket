@@ -35,9 +35,11 @@ export async function jobFinder(page, browser, socket) {
       ".job-details-jobs-unified-top-card__job-insight.job-details-jobs-unified-top-card__job-insight--highlight",
     );
     let jobSalaryMatch = await jobDetails.match(
-      /\$[a-zA-Z0-9\s\-]+\/yr\s*-\s*\$[a-zA-Z0-9\s\-]+\/yr/,
+      /\$[a-zA-Z0-9\s\-]+\/(yr|hr)\s*-\s*\$[a-zA-Z0-9\s\-]+\/(yr|hr)/,
     );
-    let jobScheduleMatch = await jobDetails.match(/(Full-time|Part-time)/);
+    let jobScheduleMatch = await jobDetails.match(
+      /(Full-time|Part-time|Temporary|Contract|Internship)/,
+    );
     let jobLocationMatch = await jobDetails.match(/(On-site|Remote|Hybrid)/);
 
     let jobSalary = jobSalaryMatch ? jobSalaryMatch[0] : "No salary provided";

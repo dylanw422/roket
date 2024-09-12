@@ -1,7 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { socket } from "@/socket";
+import React, { useState } from "react";
 import { Spinner } from "../ui/spinner";
+import {
+  useSocketListeners,
+  startTask,
+  captchaAnswer,
+} from "@/hooks/socketService";
+import { Trash } from "../icons/trash";
 
 interface Job {
   title: string;
@@ -9,68 +14,24 @@ interface Job {
   salary: string;
   location: string;
   schedule: string;
-  status: string;
+  pinned: boolean;
 }
 
 export default function Main() {
-  const [status, setStatus] = useState("Start Task");
-  const [process, setProcess] = useState("Starting service...");
-  const [captchaImg, setCaptchaImg] = useState<string | null>(null);
-  const [captchaProcess, setCaptchaProcess] = useState<number>(0);
-  const [rowsFromSocket, setRowsFromSocket] = useState<Job[]>([]);
   const [rowsFromDb, setRowsFromDb] = useState<Job[]>([]);
+  const { status, process, captchaImg, captchaProcess, rowsFromSocket } =
+    useSocketListeners();
 
-  const startTask = () => {
-    socket.emit(
-      "servicestart",
+  const handleStartTask = () => {
+    startTask(
       localStorage.getItem("LinkedInUsername"),
       localStorage.getItem("LinkedInPassword"),
     );
   };
 
-  const captchaAnswer = (ans: number) => {
-    socket.emit("captchaAnswer", ans);
-    setCaptchaImg(null);
+  const handleCaptchaAnswer = (ans: number) => {
+    captchaAnswer(ans);
   };
-
-  socket.on("running", () => {
-    setStatus("Running...");
-  });
-
-  socket.on("stopped", () => {
-    setStatus("Start Task");
-  });
-
-  socket.on("process", (msg) => {
-    setProcess(msg);
-    if (msg === "Preparing Captcha...") {
-      setCaptchaProcess(1);
-    }
-
-    if (msg === "Captcha Solved!") {
-      setCaptchaProcess(2);
-    }
-  });
-
-  socket.on("screenshot", (b64) => {
-    setCaptchaImg(b64);
-  });
-
-  socket.on("error", () => {
-    setStatus("Start Task");
-    setCaptchaImg(null);
-    setCaptchaProcess(0);
-  });
-
-  useEffect(() => {
-    socket.on("job", (obj) => {
-      setRowsFromSocket((prevState) => [obj, ...prevState]);
-    });
-
-    return () => {
-      socket.off("job");
-    };
-  }, []);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -94,7 +55,7 @@ export default function Main() {
                     <div
                       key={squareNumber}
                       className="bg-transparent hover:bg-black/20 cursor-pointer text-black"
-                      onClick={() => captchaAnswer(squareNumber)}
+                      onClick={() => handleCaptchaAnswer(squareNumber)}
                     ></div>
                   );
                 })}
@@ -129,7 +90,7 @@ export default function Main() {
         <div className="flex space-x-4">
           <button
             onClick={() => {
-              startTask();
+              handleStartTask();
             }}
             className="px-4 py-2 rounded-lg border-t border-white dark:border-gray-700 bg-neutral-50 dark:bg-gray-900 flex items-center shadow-neutral-300 shadow-md dark:shadow-black dark:shadow-md hover:bg-white dark:hover:bg-gray-800 transition duration-300"
           >
@@ -171,7 +132,7 @@ export default function Main() {
               <th className="font-normal">Job Type</th>
               <th className="font-normal">Salary</th>
               <th className="font-normal">Remote</th>
-              <th className="font-normal">Status</th>
+              <th className="font-normal"></th>
             </tr>
           </thead>
           {rowsFromSocket.map((job, index) => (
@@ -184,7 +145,24 @@ export default function Main() {
               <td>{job.schedule}</td>
               <td>{job.salary}</td>
               <td>{job.location}</td>
-              <td>{job.status}</td>
+              <td className="space-x-4">
+                <button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-5 icon icon-tabler icons-tabler-filled icon-tabler-pin"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15.113 3.21l.094 .083l5.5 5.5a1 1 0 0 1 -1.175 1.59l-3.172 3.171l-1.424 3.797a1 1 0 0 1 -.158 .277l-.07 .08l-1.5 1.5a1 1 0 0 1 -1.32 .082l-.095 -.083l-2.793 -2.792l-3.793 3.792a1 1 0 0 1 -1.497 -1.32l.083 -.094l3.792 -3.793l-2.792 -2.793a1 1 0 0 1 -.083 -1.32l.083 -.094l1.5 -1.5a1 1 0 0 1 .258 -.187l.098 -.042l3.796 -1.425l3.171 -3.17a1 1 0 0 1 1.497 -1.26z" />
+                  </svg>
+                </button>
+                <button>
+                  <Trash />
+                </button>
+              </td>
             </tr>
           ))}
           {rowsFromDb.map((job, index) => (

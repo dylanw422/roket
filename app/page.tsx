@@ -10,6 +10,7 @@ import Image from "next/image";
 import { socket } from "@/socket";
 import Locked from "@/components/main/locked";
 import { useTheme } from "next-themes";
+import { startTask } from "@/hooks/socketService";
 
 export default function Home() {
   const [page, setPage] = useState("main");
@@ -51,6 +52,10 @@ export default function Home() {
         setTheme(theme === "dark" ? "light" : "dark");
         console.log(theme);
       }
+
+      if (e.metaKey && e.key === "s") {
+        startTask(localStorage.LinkedInUsername, localStorage.LinkedInPassword);
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -81,7 +86,7 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen flex bg-neutral-100 dark:bg-gray-950 text-neutral-800 dark:text-white text-sm">
-      <Nav updatePage={setPage} resetKey={setProductKeyVerified} />
+      <Nav updatePage={setPage} page={page} resetKey={setProductKeyVerified} />
       <div className="w-full h-screen p-4">{renderContent()}</div>
     </div>
   );
