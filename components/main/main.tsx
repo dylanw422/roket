@@ -125,7 +125,7 @@ export default function Main() {
               <th className="font-normal">Salary</th>
               <th className="font-normal">Remote</th>
               <th className="font-normal">Date Applied</th>
-              <th className="font-normal"></th>
+              <th className="font-normal w-12"></th>
             </tr>
           </thead>
           {rowsFromSocket.map((job, index) => (
@@ -138,7 +138,7 @@ export default function Main() {
               <td>{job.schedule}</td>
               <td>{job.salary}</td>
               <td>{job.location}</td>
-              <td>{job.timestamp}</td>
+              <td>{new Date(job.timestamp).toLocaleDateString("en-US")}</td>
               <td>
                 <button>
                   <Pin className="text-gray-500" />

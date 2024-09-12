@@ -8,6 +8,6 @@ export interface Job {
   salary: string;
   location: string;
   schedule: string;
-  timestamp: number;
+  timestamp: Date;
   pinned: boolean;
 }
