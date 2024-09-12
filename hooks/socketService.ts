@@ -1,14 +1,6 @@
 import { socket } from "@/socket";
+import { Job } from "@/types/types";
 import { useState, useEffect } from "react";
-
-interface Job {
-  title: string;
-  company: string;
-  salary: string;
-  location: string;
-  schedule: string;
-  status: string;
-}
 
 // Event emitter functions
 export const startTask = (username: string | null, password: string | null) => {

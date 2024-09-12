@@ -1,3 +1,5 @@
+import { timeStamp } from "console";
+
 export async function jobFinder(page, browser, socket) {
   socket.emit("process", "Starting job search...");
   await page.locator("[aria-label='Search']").fill("Software Engineer");
@@ -35,7 +37,7 @@ export async function jobFinder(page, browser, socket) {
       ".job-details-jobs-unified-top-card__job-insight.job-details-jobs-unified-top-card__job-insight--highlight",
     );
     let jobSalaryMatch = await jobDetails.match(
-      /\$[a-zA-Z0-9\s\-]+\/(yr|hr)\s*-\s*\$[a-zA-Z0-9\s\-]+\/(yr|hr)/,
+      /\$[a-zA-Z0-9\s\-]+\/(yr|hr)(\s*-\s*\$[a-zA-Z0-9\s\-]+\/(yr|hr))?/,
     );
     let jobScheduleMatch = await jobDetails.match(
       /(Full-time|Part-time|Temporary|Contract|Internship)/,
@@ -122,6 +124,7 @@ export async function jobFinder(page, browser, socket) {
       salary: jobSalary.trim(),
       location: jobLocation.trim(),
       schedule: jobSchedule.trim(),
+      timestamp: new Date(),
     });
 
     // CLOSE MODAL
