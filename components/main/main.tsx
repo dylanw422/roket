@@ -72,7 +72,7 @@ export default function Main() {
           </div>
         </div>
       ) : null}
-      <h1 className="text-2xl font-bold">Application Board</h1>
+      <h1 className="text-2xl font-medium">Application Board</h1>
       <div id="info" className="mt-4 flex justify-between">
         <div className="flex space-x-4">
           <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">

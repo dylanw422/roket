@@ -17,3 +17,8 @@ export interface Job {
   timestamp: Date;
   pinned: boolean;
 }
+
+export interface DockProps {
+  className: string;
+  setPage: (page: string) => void;
+}

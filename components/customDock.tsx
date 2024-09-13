@@ -1,16 +1,5 @@
 import React from "react";
-import Link from "next/link";
-import { CalendarIcon, HomeIcon, MailIcon, PencilIcon } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Dock, DockIcon } from "@/components/magicui/dock";
 import { useTheme } from "next-themes";
 import { Home } from "./icons/home";
@@ -20,12 +9,11 @@ import { Moon } from "./icons/moon";
 import { Sun } from "./icons/sun";
 import { ProfileIcon } from "./icons/profileIcon";
 import { Gear } from "./icons/gear";
+import { DockProps } from "@/types/types";
 
 export type IconProps = React.HTMLAttributes<SVGElement>;
 
-export function CustomDock({
-  className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function CustomDock({ className, setPage }: DockProps) {
   const { theme, setTheme } = useTheme();
   const ICONS = {
     home: <Home />,
@@ -38,7 +26,7 @@ export function CustomDock({
   const DATA = {
     navbar: [
       {
-        name: "home",
+        name: "main",
         icon: ICONS.home,
       },
       {
@@ -70,11 +58,15 @@ export function CustomDock({
     <div className={className}>
       <Dock direction="middle">
         {DATA.navbar.map((item, index) => (
-          <DockIcon key={index}>{item.icon}</DockIcon>
+          <DockIcon onClick={() => setPage(item.name)} key={index}>
+            {item.icon}
+          </DockIcon>
         ))}
         <Separator orientation="vertical" className="h-full" />
         {DATA.settings.map((item, index) => (
-          <DockIcon key={index}>{item.icon}</DockIcon>
+          <DockIcon onClick={() => setPage(item.name)} key={index}>
+            {item.icon}
+          </DockIcon>
         ))}
         <Separator orientation="vertical" className="h-full py-2" />
         <DockIcon onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>

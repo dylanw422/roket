@@ -90,7 +90,10 @@ export default function Home() {
     <div className="w-full h-screen flex bg-neutral-100 dark:bg-gray-950 text-neutral-800 dark:text-white text-sm">
       {/* <Nav updatePage={setPage} page={page} resetKey={setProductKeyVerified} /> */}
       <div className="w-full h-screen p-4">{renderContent()}</div>
-      <CustomDock className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-auto flex items-center my-4" />
+      <CustomDock
+        setPage={setPage}
+        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-auto flex items-center my-4"
+      />
     </div>
   );
 }
