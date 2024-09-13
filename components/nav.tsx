@@ -6,6 +6,7 @@ import { Bolt } from "./icons/bolt";
 import { PlanetIcon } from "./icons/planetIcon";
 import { ProfileIcon } from "./icons/profileIcon";
 import { Gear } from "./icons/gear";
+import { Menu } from "./icons/menu";
 
 export default function Nav({ updatePage, page, resetKey }: any) {
   return (

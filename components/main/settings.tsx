@@ -24,7 +24,7 @@ export default function Settings() {
   return (
     <div className="w-full h-full flex flex-col">
       <div className="w-1/3 h-full border border-neutral-300 dark:border-gray-800 rounded-lg p-4 shadow-black/10 dark:shadow-black shadow-md">
-        <h1 className="text-xl">Keyboard Shortcuts</h1>
+        <h1 className="text-xl font-bold">Keyboard Shortcuts</h1>
         <Shortcut isMac={isMac} func={"Toggle Night Mode"} shortcut={"N"} />
         <Shortcut isMac={isMac} func={"Start Service"} shortcut={"S"} />
       </div>

@@ -17,7 +17,7 @@ export async function jobFinder(page, browser, socket) {
   const jobCardCount = await jobCards.count();
   console.log("jobs cards", jobCardCount);
 
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < 5; i++) {
     const jobSection = jobCards.nth(i);
     const jobSectionId = await jobSection.getAttribute(
       "data-occludable-job-id",
@@ -114,10 +114,10 @@ export async function jobFinder(page, browser, socket) {
     }
 
     // SUBMIT APPLICATION STEP
-    // if (await submitBtn.isVisible()) {
-    //   await submitBtn.click();
-    // }
-    //
+    if (await submitBtn.isVisible()) {
+      await submitBtn.click();
+    }
+
     socket.emit("job", {
       title: jobTitle.trim(),
       company: companyName.trim(),
@@ -129,6 +129,14 @@ export async function jobFinder(page, browser, socket) {
 
     // CLOSE MODAL
     let closeBtn = await page.locator("[data-test-modal-close-btn]");
+    if (await closeBtn.isVisible()) {
+      await closeBtn.click();
+    }
+
+    await page.waitForTimeout(2000);
+
+    // CLOSE SENT MODAL
+    closeBtn = await page.locator("[aria-label='Dismiss']").first();
     if (await closeBtn.isVisible()) {
       await closeBtn.click();
     }

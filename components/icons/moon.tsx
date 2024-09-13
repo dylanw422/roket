@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { IconProps } from "@/types/types";
 
-export function ProfileIcon({ className }: IconProps) {
+export function Moon({ className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -10,13 +10,12 @@ export function ProfileIcon({ className }: IconProps) {
       viewBox="0 0 24 24"
       fill="currentColor"
       className={cn(
-        `w-5 icon icon-tabler icons-tabler-filled icon-tabler-user `,
+        "w-4 icon icon-tabler icons-tabler-filled icon-tabler-moon",
         className,
       )}
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
-      <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" />
+      <path d="M12 1.992a10 10 0 1 0 9.236 13.838c.341 -.82 -.476 -1.644 -1.298 -1.31a6.5 6.5 0 0 1 -6.864 -10.787l.077 -.08c.551 -.63 .113 -1.653 -.758 -1.653h-.266l-.068 -.006l-.06 -.002z" />
     </svg>
   );
 }

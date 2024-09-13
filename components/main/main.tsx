@@ -8,6 +8,9 @@ import {
 } from "@/hooks/socketService";
 import { Pin } from "../icons/pin";
 import { Job } from "@/types/types";
+import AnimatedGradientText from "../magicui/animated-gradient-text";
+import { cn } from "@/lib/utils";
+import { BorderBeam } from "../magicui/border-beam";
 
 export default function Main() {
   const [rowsFromDb, setRowsFromDb] = useState<Job[]>([]);
@@ -57,16 +60,19 @@ export default function Main() {
         </div>
       ) : null}
       {status == "Running..." ? (
-        <div className="absolute bottom-0 right-0 z-10 m-4 w-1/4 bg-white dark:bg-gray-900 rounded-lg border border-neutral-300 dark:border-gray-800 p-4 animate-slideIn shadow-black/20 dark:shadow-black shadow-md">
-          <p className="dark:text-gray-300">
-            {process.includes("@") ? "Applying To:" : "Status:"}
-          </p>
-          <p className="text-xs text-neutral-500 dark:text-gray-400 pt-2">
-            {process}
-          </p>
+        <div className="absolute bottom-0 right-0 z-10 m-4 w-1/4 bg-white dark:bg-gray-900 rounded-lg border border-neutral-300 dark:border-gray-800 p-0 animate-slideIn shadow-black/20 dark:shadow-black shadow-md">
+          <div className="relative w-full h-full rounded-lg p-4">
+            <p className="dark:text-gray-300">
+              {process.includes("@") ? "Applying To:" : "Status:"}
+            </p>
+            <p className="text-xs text-neutral-500 dark:text-gray-400 pt-2">
+              {process}
+            </p>
+            <BorderBeam size={100} duration={5} />
+          </div>
         </div>
       ) : null}
-      <h1 className="text-2xl">Tasks</h1>
+      <h1 className="text-2xl font-bold">Application Board</h1>
       <div id="info" className="mt-4 flex justify-between">
         <div className="flex space-x-4">
           <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
@@ -75,7 +81,7 @@ export default function Main() {
           <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
             824 Success
           </h1>
-          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
+          <h1 className="relative px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
             415 Fails
           </h1>
         </div>
@@ -84,30 +90,14 @@ export default function Main() {
             onClick={() => {
               handleStartTask();
             }}
-            className="px-4 py-2 rounded-lg border-t border-white dark:border-gray-700 bg-neutral-50 dark:bg-gray-900 flex items-center shadow-neutral-300 shadow-md dark:shadow-black dark:shadow-md hover:bg-white dark:hover:bg-gray-800 transition duration-300"
           >
-            {status == "Running..." ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-4 mr-2 text-red-500 icon icon-tabler icons-tabler-filled icon-tabler-player-stop"
+            <AnimatedGradientText className="h-full rounded-lg">
+              <span
+                className={`inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`}
               >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-4 mr-2 text-green-400 icon icon-tabler icons-tabler-filled icon-tabler-player-play"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" />
-              </svg>
-            )}
-            <p>{status}</p>
+                {status}
+              </span>
+            </AnimatedGradientText>
           </button>
           <input
             className="rounded-lg border dark:border-gray-800 dark:bg-gray-900 px-4 outline-none h-full"

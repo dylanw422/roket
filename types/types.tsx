@@ -2,6 +2,12 @@ export interface IconProps {
   className?: string;
 }
 
+export interface CustomButtonProps {
+  className?: string;
+  content?: string;
+  onClick?: () => void;
+}
+
 export interface Job {
   title: string;
   company: string;

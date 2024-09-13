@@ -11,6 +11,8 @@ import { socket } from "@/socket";
 import Locked from "@/components/main/locked";
 import { useTheme } from "next-themes";
 import { startTask } from "@/hooks/socketService";
+import { Dock, DockIcon } from "@/components/magicui/dock";
+import { CustomDock } from "@/components/customDock";
 
 export default function Home() {
   const [page, setPage] = useState("main");
@@ -86,8 +88,9 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen flex bg-neutral-100 dark:bg-gray-950 text-neutral-800 dark:text-white text-sm">
-      <Nav updatePage={setPage} page={page} resetKey={setProductKeyVerified} />
+      {/* <Nav updatePage={setPage} page={page} resetKey={setProductKeyVerified} /> */}
       <div className="w-full h-screen p-4">{renderContent()}</div>
+      <CustomDock className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-auto flex items-center my-4" />
     </div>
   );
 }

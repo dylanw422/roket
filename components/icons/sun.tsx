@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
-import { IconProps } from "@/types/types";
+import { IconProps } from "../customDock";
 
-export function PlanetIcon({ className }: IconProps) {
+export function Sun({ className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,13 +14,13 @@ export function PlanetIcon({ className }: IconProps) {
       stroke-linecap="round"
       stroke-linejoin="round"
       className={cn(
-        `w-5 icon icon-tabler icons-tabler-outline icon-tabler-planet`,
+        "icon icon-tabler icons-tabler-outline icon-tabler-sun",
         className,
       )}
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M18.816 13.58c2.292 2.138 3.546 4 3.092 4.9c-.745 1.46 -5.783 -.259 -11.255 -3.838c-5.47 -3.579 -9.304 -7.664 -8.56 -9.123c.464 -.91 2.926 -.444 5.803 .805" />
-      <path d="M12 12m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+      <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+      <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" />
     </svg>
   );
 }
