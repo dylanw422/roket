@@ -14,11 +14,15 @@ export interface Job {
   salary: string;
   location: string;
   schedule: string;
-  timestamp: Date;
+  timestamp: string;
   pinned: boolean;
 }
 
 export interface DockProps {
   className: string;
   setPage: (page: string) => void;
+}
+
+export interface JobsFromDB {
+  data: Job[];
 }

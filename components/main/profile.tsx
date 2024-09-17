@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Switch } from "../ui/switch";
+import AnimatedGradientText from "../magicui/animated-gradient-text";
 
 export default function Profile() {
   const [username, setUsername] = useState<string>(() => {
@@ -75,11 +76,14 @@ export default function Profile() {
             />
           </div>
         </div>
-        <button
-          onClick={() => saveToLocalStorage()}
-          className="px-4 py-2 rounded-lg bg-violet-500 hover:bg-[#9469f5] transition duration-100 text-white"
-        >
-          {saved == 0 ? "Save" : "Saved"}
+        <button onClick={() => saveToLocalStorage()}>
+          <AnimatedGradientText className="h-full rounded-lg">
+            <span
+              className={`inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-secondary-foreground/80`}
+            >
+              {saved == 0 ? "Save" : "Saved"}
+            </span>
+          </AnimatedGradientText>
         </button>
       </div>
       <p className="py-4 text-gray-500 border-b border-neutral-300 dark:border-gray-900">

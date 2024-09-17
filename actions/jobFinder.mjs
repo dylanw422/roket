@@ -1,4 +1,5 @@
 import { timeStamp } from "console";
+import { insertJob } from "../database/queries.mjs";
 
 export async function jobFinder(page, browser, socket) {
   socket.emit("process", "Starting job search...");
@@ -118,14 +119,19 @@ export async function jobFinder(page, browser, socket) {
       await submitBtn.click();
     }
 
-    socket.emit("job", {
+    let job = {
       title: jobTitle.trim(),
       company: companyName.trim(),
       salary: jobSalary.trim(),
       location: jobLocation.trim(),
       schedule: jobSchedule.trim(),
-      timestamp: new Date(),
-    });
+      timestamp: new Date().toLocaleDateString("en-US"),
+      pinned: 0,
+    };
+
+    socket.emit("job", job);
+    insertJob(job);
+    console.log("Job inserted into db.");
 
     // CLOSE MODAL
     let closeBtn = await page.locator("[data-test-modal-close-btn]");

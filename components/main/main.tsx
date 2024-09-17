@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { Spinner } from "../ui/spinner";
 import {
   useSocketListeners,
@@ -7,13 +7,13 @@ import {
   captchaAnswer,
 } from "@/hooks/socketService";
 import { Pin } from "../icons/pin";
-import { Job } from "@/types/types";
 import AnimatedGradientText from "../magicui/animated-gradient-text";
-import { cn } from "@/lib/utils";
 import { BorderBeam } from "../magicui/border-beam";
+import { Job } from "@/types/types";
+import { useQuery } from "@tanstack/react-query";
+import { getAllJobs } from "@/lib/queryFunctions";
 
 export default function Main() {
-  const [rowsFromDb, setRowsFromDb] = useState<Job[]>([]);
   const { status, process, captchaImg, captchaProcess, rowsFromSocket } =
     useSocketListeners();
 
@@ -27,6 +27,11 @@ export default function Main() {
   const handleCaptchaAnswer = (ans: number) => {
     captchaAnswer(ans);
   };
+
+  // FETCH DATA
+  const { data } = useQuery({ queryKey: ["jobs"], queryFn: getAllJobs });
+
+  // const data = [];
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -118,7 +123,25 @@ export default function Main() {
               <th className="font-normal w-12"></th>
             </tr>
           </thead>
-          {rowsFromSocket.map((job, index) => (
+          {rowsFromSocket.map((job: Job, index: number) => (
+            <tr
+              className={`text-center border-b border-neutral-300 dark:border-gray-900 ${index === 0 ? "animate-slideUp" : ""}`}
+              key={index}
+            >
+              <td className="py-4">{job.title}</td>
+              <td>{job.company}</td>
+              <td>{job.schedule}</td>
+              <td>{job.salary}</td>
+              <td>{job.location}</td>
+              <td>{job.timestamp}</td>
+              <td>
+                <button>
+                  <Pin className="text-gray-500" />
+                </button>
+              </td>
+            </tr>
+          ))}
+          {data?.map((job: Job, index: number) => (
             <tr
               className="text-center border-b border-neutral-300 dark:border-gray-900"
               key={index}
@@ -128,7 +151,7 @@ export default function Main() {
               <td>{job.schedule}</td>
               <td>{job.salary}</td>
               <td>{job.location}</td>
-              <td>{new Date(job.timestamp).toLocaleDateString("en-US")}</td>
+              <td>{job.timestamp}</td>
               <td>
                 <button>
                   <Pin className="text-gray-500" />
@@ -136,11 +159,8 @@ export default function Main() {
               </td>
             </tr>
           ))}
-          {rowsFromDb.map((job, index) => (
-            <tr key={index}></tr>
-          ))}
         </table>
-        {rowsFromSocket.length === 0 && rowsFromDb.length === 0 ? (
+        {rowsFromSocket.length === 0 && data?.length === 0 ? (
           <div className="w-full h-full flex justify-center items-center">
             <h1 className="text-gray-500">No tasks to display.</h1>
           </div>

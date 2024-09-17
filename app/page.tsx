@@ -1,17 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Nav from "@/components/nav";
 import Main from "@/components/main/main";
 import Ai from "@/components/main/ai";
 import Planet from "@/components/main/planet";
 import Profile from "@/components/main/profile";
 import Settings from "@/components/main/settings";
-import Image from "next/image";
-import { socket } from "@/socket";
 import Locked from "@/components/main/locked";
+import { socket } from "@/socket";
 import { useTheme } from "next-themes";
 import { startTask } from "@/hooks/socketService";
-import { Dock, DockIcon } from "@/components/magicui/dock";
 import { CustomDock } from "@/components/customDock";
 
 export default function Home() {
@@ -21,6 +18,7 @@ export default function Home() {
   const [transport, setTransport] = useState("N/A");
   const { theme, setTheme } = useTheme();
 
+  // SOCKET CONNECTION
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
@@ -48,6 +46,7 @@ export default function Home() {
     };
   }, []);
 
+  // KEYBOARD SHORTCUTS AND THEME
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.metaKey && e.key === "n") {
