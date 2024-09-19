@@ -1,4 +1,3 @@
-import { timeStamp } from "console";
 import { insertJob } from "../database/queries.mjs";
 
 export async function jobFinder(page, browser, socket) {
@@ -54,6 +53,7 @@ export async function jobFinder(page, browser, socket) {
       : "Location not provided";
 
     console.log(jobSalary, jobSchedule, jobLocation);
+
     // START APPLICATION: CLICK APPLY BUTTON
     let applyBtn = await page
       .locator(".jobs-apply-button.artdeco-button")
