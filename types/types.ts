@@ -9,13 +9,14 @@ export interface CustomButtonProps {
 }
 
 export interface Job {
+  id: number;
   title: string;
   company: string;
   salary: string;
   location: string;
   schedule: string;
   timestamp: string;
-  pinned: boolean;
+  pinned: number;
 }
 
 export interface DockProps {
