@@ -24,7 +24,20 @@ export const insertJob = (job) => {
 };
 
 export const getAllJobs = () => {
-  const stmt = db.prepare("SELECT * FROM jobs");
+  const stmt = db.prepare("SELECT * FROM jobs ORDER BY id DESC");
   const jobs = stmt.all();
   return jobs;
+};
+
+export const setAsPinned = (id) => {
+  const stmt = db.prepare(
+    "UPDATE jobs SET pinned = CASE WHEN pinned = 1 THEN 0 ELSE 1 END WHERE id = ?",
+  );
+  const result = stmt.run(id);
+
+  if (result.changes > 0) {
+    return `Job with id ${id} had its pinned status toggled.`;
+  } else {
+    return `No job was updated. Either the job is already pinned or it doesn't exist`;
+  }
 };
