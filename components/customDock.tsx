@@ -33,10 +33,6 @@ export function CustomDock({ className, setPage }: DockProps) {
         name: "ai",
         icon: ICONS.ai,
       },
-      {
-        name: "planet",
-        icon: ICONS.planet,
-      },
     ],
     settings: [
       {
