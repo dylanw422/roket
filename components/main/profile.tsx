@@ -100,14 +100,14 @@ export default function Profile() {
           <div id="job-search" className="flex items-center justify-between">
             <h1>Job Search</h1>
             <input
-              className="rounded-lg dark:bg-gray-900 border border-neutral-300 dark:border-gray-800 p-1 px-2 text-xs w-1/2 outline-none placeholder:text-gray-500"
+              className="rounded-lg dark:bg-gray-900 border border-neutral-300 dark:border-gray-800 py-2 px-2 text-xs w-1/2 outline-none placeholder:text-gray-500"
               placeholder="Frontend Software Engineer"
             />
           </div>
           <div id="experience" className="flex items-center justify-between">
             <h1>Experience</h1>
             <Select>
-              <SelectTrigger className="w-1/2 py-1 px-2 text-xs border-neutral-300 dark:border-gray-800 text-gray-500">
+              <SelectTrigger className="w-1/2 px-2 text-xs border-neutral-300 dark:border-gray-800 text-gray-500">
                 <SelectValue placeholder="Experience" />
               </SelectTrigger>
               <SelectContent>
@@ -123,7 +123,7 @@ export default function Profile() {
           <div id="salary" className="flex items-center justify-between">
             <h1>Salary Requirements</h1>
             <Select>
-              <SelectTrigger className="w-1/2 py-1 px-2 text-xs border border-neutral-300 dark:border-gray-800 text-gray-500">
+              <SelectTrigger className="w-1/2 px-2 text-xs border border-neutral-300 dark:border-gray-800 text-gray-500">
                 <SelectValue placeholder="Salary" />
               </SelectTrigger>
               <SelectContent>
@@ -141,7 +141,7 @@ export default function Profile() {
           <div id="job-type" className="flex items-center justify-between">
             <h1>Job Type</h1>
             <Select>
-              <SelectTrigger className="w-1/2 py-1 px-2 text-xs border border-neutral-300 dark:border-gray-800 text-gray-500">
+              <SelectTrigger className="w-1/2 px-2 text-xs border border-neutral-300 dark:border-gray-800 text-gray-500">
                 <SelectValue placeholder="Job Type" />
               </SelectTrigger>
               <SelectContent>

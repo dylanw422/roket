@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Spinner } from "../ui/spinner";
 import {
   useSocketListeners,
@@ -10,13 +10,101 @@ import { Pin } from "../icons/pin";
 import AnimatedGradientText from "../magicui/animated-gradient-text";
 import { BorderBeam } from "../magicui/border-beam";
 import { Job } from "@/types/types";
-import { useQuery } from "@tanstack/react-query";
-import { getAllJobs } from "@/lib/queryFunctions";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getAllJobs, pinningFn } from "@/lib/queryFunctions";
 
 export default function Main() {
+  const [pinned, setPinned] = useState<Job[]>([]);
+  const [jobsFromDb, setJobsFromDb] = useState<Job[]>([]);
+  const [filterCriteria, setFilterCriteria] = useState<string>("");
   const { status, process, captchaImg, captchaProcess, rowsFromSocket } =
     useSocketListeners();
 
+  // MAIN FUNCTIONS
+  const pin = async (job: Job) => {
+    pinningMutation.mutate(job.id);
+
+    setJobsFromDb((prevState) =>
+      prevState.filter((item) => item.id !== job.id),
+    );
+    setPinned((prevState) => [...prevState, job]);
+  };
+
+  const unpin = async (job: Job) => {
+    pinningMutation.mutate(job.id);
+
+    setPinned((prevState) => prevState.filter((item) => item.id !== job.id));
+    setJobsFromDb((prevState) => [job, ...prevState]);
+  };
+
+  const convertToYearlySalary = (salary: any) => {
+    if (salary.toLowerCase() === "no salary provided") {
+      return null; // Ignore if no salary is provided
+    }
+
+    // Regex patterns for different salary formats
+    const hourlyPattern = /\$([\d,.]+)\/hr/;
+    const yearlyPattern = /\$([\d,.]+)K\/yr/;
+    const hourlyRangePattern = /\$([\d,.]+)\/hr - \$([\d,.]+)\/hr/;
+    const yearlyRangePattern = /\$([\d,.]+)K\/yr - \$([\d,.]+)K\/yr/;
+
+    const hoursPerWeek = 40;
+    const weeksPerYear = 52;
+
+    // Handle hourly range
+    if (hourlyRangePattern.test(salary)) {
+      const match = salary.match(hourlyRangePattern);
+      const minHourly = parseFloat(match[1].replace(/,/g, ""));
+      const maxHourly = parseFloat(match[2].replace(/,/g, ""));
+      return ((minHourly + maxHourly) / 2) * hoursPerWeek * weeksPerYear;
+    }
+
+    // Handle hourly single rate
+    if (hourlyPattern.test(salary)) {
+      const match = salary.match(hourlyPattern);
+      const hourlyRate = parseFloat(match[1].replace(/,/g, ""));
+      return hourlyRate * hoursPerWeek * weeksPerYear;
+    }
+
+    // Handle yearly range
+    if (yearlyRangePattern.test(salary)) {
+      const match = salary.match(yearlyRangePattern);
+      const minYearly = parseFloat(match[1].replace(/,/g, "")) * 1000;
+      const maxYearly = parseFloat(match[2].replace(/,/g, "")) * 1000;
+      return (minYearly + maxYearly) / 2;
+    }
+
+    // Handle yearly single rate
+    if (yearlyPattern.test(salary)) {
+      const match = salary.match(yearlyPattern);
+      return parseFloat(match[1].replace(/,/g, "")) * 1000;
+    }
+
+    return null; // Return null for unrecognized formats
+  };
+
+  const findMostFrequentLocation = (jobs: Array<Job>) => {
+    const locationCount = jobs.reduce((acc: any, job: Job) => {
+      const location = job.location;
+      acc[location] = (acc[location] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Find the location with the highest count
+    let mostFrequentLocation = null;
+    let maxCount = 0;
+
+    for (const [location, count] of Object.entries(locationCount)) {
+      if ((count as any) > maxCount) {
+        mostFrequentLocation = location;
+        (maxCount as any) = count;
+      }
+    }
+
+    return mostFrequentLocation;
+  };
+
+  // USE HOOKS
   const handleStartTask = () => {
     startTask(
       localStorage.getItem("LinkedInUsername"),
@@ -28,10 +116,16 @@ export default function Main() {
     captchaAnswer(ans);
   };
 
-  // FETCH DATA
+  // QUERIES AND MUTATIONS
   const { data } = useQuery({ queryKey: ["jobs"], queryFn: getAllJobs });
+  const pinningMutation = useMutation({ mutationFn: pinningFn });
 
-  // const data = [];
+  useEffect(() => {
+    setJobsFromDb(data?.slice(0, 200).filter((job: Job) => job.pinned === 0));
+    setPinned(data?.filter((job: Job) => job.pinned === 1));
+  }, [data]);
+
+  // const data = []
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -80,14 +174,21 @@ export default function Main() {
       <h1 className="text-2xl font-medium">Application Board</h1>
       <div id="info" className="mt-4 flex justify-between">
         <div className="flex space-x-4">
-          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
-            1239 Tasks
+          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-purple-400 text-purple-500">
+            {data?.length} Applications
           </h1>
-          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
-            824 Success
+          <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-pink-400 text-pink-500">
+            $
+            {Math.round(
+              data
+                ?.map((job: Job) => convertToYearlySalary(job.salary))
+                .filter((salary: string) => salary !== null)
+                .reduce((sum: number, salary: number) => sum + salary, 0) /
+                data?.length,
+            ).toLocaleString()}
           </h1>
-          <h1 className="relative px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-neutral-200 dark:border-gray-800">
-            415 Fails
+          <h1 className="relative px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-orange-400 text-orange-500">
+            {findMostFrequentLocation(data ? data : [])}
           </h1>
         </div>
         <div className="flex space-x-4">
@@ -105,60 +206,104 @@ export default function Main() {
             </AnimatedGradientText>
           </button>
           <input
+            value={filterCriteria}
+            onChange={(e) => setFilterCriteria(e.target.value)}
             className="rounded-lg border dark:border-gray-800 dark:bg-gray-900 px-4 outline-none h-full"
             placeholder="Filter Tasks"
           />
         </div>
       </div>
-      <div className="flex flex-col flex-1 mt-8 text-xs overflow-y-scroll">
+      <div className="flex flex-col flex-1 mt-8 pb-12 text-xs overflow-y-scroll">
         <table className="table-fixed w-full">
-          <thead>
+          <thead className="sticky top-0 bg-neutral-100 dark:bg-gray-950">
             <tr className="border-b border-neutral-300 dark:border-gray-800 text-gray-500">
               <th className="font-normal py-2">Position</th>
               <th className="font-normal">Company</th>
               <th className="font-normal">Job Type</th>
               <th className="font-normal">Salary</th>
-              <th className="font-normal">Remote</th>
+              <th className="font-normal">Location</th>
               <th className="font-normal">Date Applied</th>
               <th className="font-normal w-12"></th>
             </tr>
           </thead>
-          {rowsFromSocket.map((job: Job, index: number) => (
-            <tr
-              className={`text-center border-b border-neutral-300 dark:border-gray-900 ${index === 0 ? "animate-slideUp" : ""}`}
-              key={index}
-            >
-              <td className="py-4">{job.title}</td>
-              <td>{job.company}</td>
-              <td>{job.schedule}</td>
-              <td>{job.salary}</td>
-              <td>{job.location}</td>
-              <td>{job.timestamp}</td>
-              <td>
-                <button>
-                  <Pin className="text-gray-500" />
-                </button>
-              </td>
-            </tr>
-          ))}
-          {data?.map((job: Job, index: number) => (
-            <tr
-              className="text-center border-b border-neutral-300 dark:border-gray-900"
-              key={index}
-            >
-              <td className="py-4">{job.title}</td>
-              <td>{job.company}</td>
-              <td>{job.schedule}</td>
-              <td>{job.salary}</td>
-              <td>{job.location}</td>
-              <td>{job.timestamp}</td>
-              <td>
-                <button>
-                  <Pin className="text-gray-500" />
-                </button>
-              </td>
-            </tr>
-          ))}
+          {pinned
+            ?.filter((job: Job) =>
+              Object.values(job).some((value) =>
+                String(value)
+                  .toLowerCase()
+                  .includes(filterCriteria.toLowerCase()),
+              ),
+            )
+            .map((job: Job, index: number) => (
+              <tr
+                className={`text-center border-b border-neutral-300 dark:border-gray-900 bg-neutral-50 dark:bg-gray-900`}
+                key={index}
+              >
+                <td className="py-4">{job.title}</td>
+                <td>{job.company}</td>
+                <td>{job.schedule}</td>
+                <td>{job.salary}</td>
+                <td>{job.location}</td>
+                <td>{job.timestamp}</td>
+                <td>
+                  <button onClick={() => unpin(job)}>
+                    <Pin className="text-rose-500" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          {rowsFromSocket
+            .filter((job: Job) =>
+              Object.values(job).some((value) =>
+                String(value)
+                  .toLowerCase()
+                  .includes(filterCriteria.toLowerCase()),
+              ),
+            )
+            .map((job: Job, index: number) => (
+              <tr
+                className={`text-center border-b border-neutral-300 dark:border-gray-900`}
+                key={index}
+              >
+                <td className="py-4">{job.title}</td>
+                <td>{job.company}</td>
+                <td>{job.schedule}</td>
+                <td>{job.salary}</td>
+                <td>{job.location}</td>
+                <td>{job.timestamp}</td>
+                <td>
+                  <button>
+                    <Pin className="text-gray-500" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          {jobsFromDb
+            ?.filter((job: Job) =>
+              Object.values(job).some((value) =>
+                String(value)
+                  .toLowerCase()
+                  .includes(filterCriteria.toLowerCase()),
+              ),
+            )
+            .map((job: Job, index: number) => (
+              <tr
+                className="text-center border-b border-neutral-300 dark:border-gray-900"
+                key={index}
+              >
+                <td className="py-4">{job.title}</td>
+                <td>{job.company}</td>
+                <td>{job.schedule}</td>
+                <td>{job.salary}</td>
+                <td>{job.location}</td>
+                <td>{job.timestamp}</td>
+                <td>
+                  <button onClick={() => pin(job)}>
+                    <Pin className="text-gray-500" />
+                  </button>
+                </td>
+              </tr>
+            ))}
         </table>
         {rowsFromSocket.length === 0 && data?.length === 0 ? (
           <div className="w-full h-full flex justify-center items-center">
