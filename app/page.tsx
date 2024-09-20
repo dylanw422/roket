@@ -55,7 +55,16 @@ export default function Home() {
       }
 
       if (e.metaKey && e.key === "s") {
-        startTask(localStorage.LinkedInUsername, localStorage.LinkedInPassword);
+        startTask(
+          localStorage.getItem("LinkedInUsername"),
+          localStorage.getItem("LinkedInPassword"),
+          localStorage.getItem("jobSearch"),
+          localStorage.getItem("experience"),
+          localStorage.getItem("salary"),
+          localStorage.getItem("jobType"),
+          localStorage.getItem("remote"),
+          localStorage.getItem("recent"),
+        );
       }
     };
 
