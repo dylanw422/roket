@@ -17,9 +17,22 @@ app.prepare().then(() => {
   io.on("connection", (socket) => {
     console.log("a user connected.");
 
-    socket.on("servicestart", (un, pw) => {
-      LinkedInApply(socket, un, pw);
-    });
+    socket.on(
+      "servicestart",
+      (un, pw, jobSearch, experience, salary, type, remote, recent) => {
+        LinkedInApply(
+          socket,
+          un,
+          pw,
+          jobSearch,
+          experience,
+          salary,
+          type,
+          remote,
+          recent,
+        );
+      },
+    );
   });
 
   httpServer
