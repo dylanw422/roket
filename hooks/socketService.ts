@@ -3,8 +3,27 @@ import { Job } from "@/types/types";
 import { useState, useEffect } from "react";
 
 // Event emitter functions
-export const startTask = (username: string | null, password: string | null) => {
-  socket.emit("servicestart", username, password);
+export const startTask = (
+  username: string | null,
+  password: string | null,
+  jobSearch: string | null,
+  experience: string | null,
+  salary: string | null,
+  type: string | null,
+  remote: string | null,
+  recent: string | null,
+) => {
+  socket.emit(
+    "servicestart",
+    username,
+    password,
+    jobSearch,
+    experience,
+    salary,
+    type,
+    remote,
+    recent,
+  );
 };
 
 export const captchaAnswer = (ans: number) => {
