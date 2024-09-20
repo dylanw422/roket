@@ -9,28 +9,30 @@ import {
 } from "../ui/select";
 import { Switch } from "../ui/switch";
 import AnimatedGradientText from "../magicui/animated-gradient-text";
+import { ProfileIcon } from "../icons/profileIcon";
+import useProfileData from "@/hooks/profileData";
 
 export default function Profile() {
-  const [username, setUsername] = useState<string>(() => {
-    return localStorage.getItem("LinkedInUsername") || "";
-  });
-  const [password, setPassword] = useState<string>(() => {
-    return localStorage.getItem("LinkedInPassword") || "";
-  });
-  const [saved, setSaved] = useState(0);
-
-  const saveToLocalStorage = () => {
-    try {
-      localStorage.setItem("LinkedInUsername", username);
-      localStorage.setItem("LinkedInPassword", password);
-      setSaved(1);
-      setTimeout(() => {
-        setSaved(0);
-      }, 2000);
-    } catch (err) {
-      console.error("error", err);
-    }
-  };
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    jobSearch,
+    setJobSearch,
+    experience,
+    setExperience,
+    salary,
+    setSalary,
+    jobType,
+    setJobType,
+    remote,
+    setRemote,
+    recent,
+    setRecent,
+    saved,
+    saveToLocalStorage,
+  } = useProfileData();
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
@@ -46,18 +48,7 @@ export default function Profile() {
             id="profile-icon"
             className="w-24 h-24 rounded-lg border border-neutral-300 dark:border-gray-800 dark:bg-gray-900 flex justify-center items-center mr-4"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="text-gray-500 icon icon-tabler icons-tabler-filled icon-tabler-user w-12 h-12"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
-              <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" />
-            </svg>
+            <ProfileIcon className="scale-150 text-gray-500" />
           </div>
           <div id="un-pw" className="flex flex-col flex-1 space-y-4">
             <input
@@ -96,18 +87,24 @@ export default function Profile() {
         you understand and agree to these terms.
       </p>
       <div className="w-full flex h-full">
-        <div className="mt-4 text-gray-600 flex flex-col rounded-xl w-full space-y-4">
+        <div className="mt-4 flex flex-col rounded-xl w-full space-y-4">
           <div id="job-search" className="flex items-center justify-between">
             <h1>Job Search</h1>
             <input
-              className="rounded-lg dark:bg-gray-900 border border-neutral-300 dark:border-gray-800 py-2 px-2 text-xs w-1/2 outline-none placeholder:text-gray-500"
+              onChange={(e) => setJobSearch(e.target.value)}
+              onKeyDown={handleKeyDown}
+              value={jobSearch}
+              className="rounded-lg dark:bg-gray-900 border border-neutral-300 dark:border-gray-800 py-2 px-2 text-xs w-1/2 outline-none placeholder:text-gray-500 text-gray-700 dark:text-neutral-300"
               placeholder="Frontend Software Engineer"
             />
           </div>
           <div id="experience" className="flex items-center justify-between">
             <h1>Experience</h1>
-            <Select>
-              <SelectTrigger className="w-1/2 px-2 text-xs border-neutral-300 dark:border-gray-800 text-gray-500">
+            <Select
+              onValueChange={(value) => setExperience(value)}
+              defaultValue={experience}
+            >
+              <SelectTrigger className="w-1/2 px-2 text-xs border-neutral-300 dark:border-gray-800">
                 <SelectValue placeholder="Experience" />
               </SelectTrigger>
               <SelectContent>
@@ -122,8 +119,11 @@ export default function Profile() {
           </div>
           <div id="salary" className="flex items-center justify-between">
             <h1>Salary Requirements</h1>
-            <Select>
-              <SelectTrigger className="w-1/2 px-2 text-xs border border-neutral-300 dark:border-gray-800 text-gray-500">
+            <Select
+              onValueChange={(value) => setSalary(value)}
+              defaultValue={salary}
+            >
+              <SelectTrigger className="w-1/2 px-2 text-xs border border-neutral-300 dark:border-gray-800">
                 <SelectValue placeholder="Salary" />
               </SelectTrigger>
               <SelectContent>
@@ -140,8 +140,11 @@ export default function Profile() {
 
           <div id="job-type" className="flex items-center justify-between">
             <h1>Job Type</h1>
-            <Select>
-              <SelectTrigger className="w-1/2 px-2 text-xs border border-neutral-300 dark:border-gray-800 text-gray-500">
+            <Select
+              onValueChange={(value) => setJobType(value)}
+              defaultValue={jobType}
+            >
+              <SelectTrigger className="w-1/2 px-2 text-xs border border-neutral-300 dark:border-gray-800">
                 <SelectValue placeholder="Job Type" />
               </SelectTrigger>
               <SelectContent>
@@ -156,11 +159,17 @@ export default function Profile() {
           </div>
           <div id="remote-only" className="flex items-center justify-between">
             <h1>Remote Only</h1>
-            <Switch />
+            <Switch
+              onCheckedChange={(bool) => setRemote(bool ? "true" : "false")}
+              defaultChecked={remote === "true" ? true : false}
+            />
           </div>
           <div id="recent" className="flex items-center justify-between">
             <h1>Recently Posted</h1>
-            <Switch />
+            <Switch
+              onCheckedChange={(bool) => setRecent(bool ? "true" : "false")}
+              defaultChecked={recent === "true" ? true : false}
+            />
           </div>
         </div>
       </div>
