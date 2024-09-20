@@ -12,6 +12,7 @@ import { BorderBeam } from "../magicui/border-beam";
 import { Job } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllJobs, pinningFn } from "@/lib/queryFunctions";
+import { convertToYearlySalary, findMostFrequentLocation } from "@/lib/utils";
 
 export default function Main() {
   const [pinned, setPinned] = useState<Job[]>([]);
@@ -20,7 +21,9 @@ export default function Main() {
   const { status, process, captchaImg, captchaProcess, rowsFromSocket } =
     useSocketListeners();
 
-  // MAIN FUNCTIONS
+  // Handle pin/unpin operations
+  const pinningMutation = useMutation({ mutationFn: pinningFn });
+
   const pin = async (job: Job) => {
     pinningMutation.mutate(job.id);
 
@@ -37,78 +40,17 @@ export default function Main() {
     setJobsFromDb((prevState) => [job, ...prevState]);
   };
 
-  const convertToYearlySalary = (salary: any) => {
-    if (salary.toLowerCase() === "no salary provided") {
-      return null; // Ignore if no salary is provided
-    }
-
-    // Regex patterns for different salary formats
-    const hourlyPattern = /\$([\d,.]+)\/hr/;
-    const yearlyPattern = /\$([\d,.]+)K\/yr/;
-    const hourlyRangePattern = /\$([\d,.]+)\/hr - \$([\d,.]+)\/hr/;
-    const yearlyRangePattern = /\$([\d,.]+)K\/yr - \$([\d,.]+)K\/yr/;
-
-    const hoursPerWeek = 40;
-    const weeksPerYear = 52;
-
-    // Handle hourly range
-    if (hourlyRangePattern.test(salary)) {
-      const match = salary.match(hourlyRangePattern);
-      const minHourly = parseFloat(match[1].replace(/,/g, ""));
-      const maxHourly = parseFloat(match[2].replace(/,/g, ""));
-      return ((minHourly + maxHourly) / 2) * hoursPerWeek * weeksPerYear;
-    }
-
-    // Handle hourly single rate
-    if (hourlyPattern.test(salary)) {
-      const match = salary.match(hourlyPattern);
-      const hourlyRate = parseFloat(match[1].replace(/,/g, ""));
-      return hourlyRate * hoursPerWeek * weeksPerYear;
-    }
-
-    // Handle yearly range
-    if (yearlyRangePattern.test(salary)) {
-      const match = salary.match(yearlyRangePattern);
-      const minYearly = parseFloat(match[1].replace(/,/g, "")) * 1000;
-      const maxYearly = parseFloat(match[2].replace(/,/g, "")) * 1000;
-      return (minYearly + maxYearly) / 2;
-    }
-
-    // Handle yearly single rate
-    if (yearlyPattern.test(salary)) {
-      const match = salary.match(yearlyPattern);
-      return parseFloat(match[1].replace(/,/g, "")) * 1000;
-    }
-
-    return null; // Return null for unrecognized formats
-  };
-
-  const findMostFrequentLocation = (jobs: Array<Job>) => {
-    const locationCount = jobs.reduce((acc: any, job: Job) => {
-      const location = job.location;
-      acc[location] = (acc[location] || 0) + 1;
-      return acc;
-    }, {});
-
-    // Find the location with the highest count
-    let mostFrequentLocation = null;
-    let maxCount = 0;
-
-    for (const [location, count] of Object.entries(locationCount)) {
-      if ((count as any) > maxCount) {
-        mostFrequentLocation = location;
-        (maxCount as any) = count;
-      }
-    }
-
-    return mostFrequentLocation;
-  };
-
   // USE HOOKS
   const handleStartTask = () => {
     startTask(
       localStorage.getItem("LinkedInUsername"),
       localStorage.getItem("LinkedInPassword"),
+      localStorage.getItem("jobSearch"),
+      localStorage.getItem("experience"),
+      localStorage.getItem("salary"),
+      localStorage.getItem("jobType"),
+      localStorage.getItem("remote"),
+      localStorage.getItem("recent"),
     );
   };
 
@@ -116,16 +58,13 @@ export default function Main() {
     captchaAnswer(ans);
   };
 
-  // QUERIES AND MUTATIONS
+  // DB QUERY
   const { data } = useQuery({ queryKey: ["jobs"], queryFn: getAllJobs });
-  const pinningMutation = useMutation({ mutationFn: pinningFn });
 
   useEffect(() => {
     setJobsFromDb(data?.slice(0, 200).filter((job: Job) => job.pinned === 0));
     setPinned(data?.filter((job: Job) => job.pinned === 1));
   }, [data]);
-
-  // const data = []
 
   return (
     <div className="w-full h-full flex flex-col">
