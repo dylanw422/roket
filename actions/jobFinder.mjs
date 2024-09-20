@@ -1,8 +1,18 @@
 import { insertJob } from "../database/queries.mjs";
 
-export async function jobFinder(page, browser, socket) {
+export async function jobFinder(
+  page,
+  browser,
+  socket,
+  jobSearch,
+  experience,
+  salary,
+  type,
+  remote,
+  recent,
+) {
   socket.emit("process", "Starting job search...");
-  await page.locator("[aria-label='Search']").fill("Software Engineer");
+  await page.locator("[aria-label='Search']").fill(jobSearch);
   await page.keyboard.press("Enter");
   await page.waitForNavigation({ waitUntil: "domcontentloaded" });
   await page.locator("button:has-text('Jobs')").first().click();

@@ -2,7 +2,17 @@ import { chromium, devices } from "playwright";
 import { solveCaptcha } from "./captchaSolver.mjs";
 import { jobFinder } from "./jobFinder.mjs";
 
-export default async function LinkedInApply(socket, un, pw) {
+export default async function LinkedInApply(
+  socket,
+  un,
+  pw,
+  jobSearch,
+  experience,
+  salary,
+  type,
+  remote,
+  recent,
+) {
   try {
     // BROWSER START
     const browser = await chromium.launch({
@@ -30,7 +40,17 @@ export default async function LinkedInApply(socket, un, pw) {
     }
 
     // PROCEED WITH JOB APPLICATION
-    await jobFinder(page, browser, socket);
+    await jobFinder(
+      page,
+      browser,
+      socket,
+      jobSearch,
+      experience,
+      salary,
+      type,
+      remote,
+      recent,
+    );
 
     // Optionally close browser after a delay
     // setTimeout(async () => {
