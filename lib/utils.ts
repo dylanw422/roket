@@ -1,6 +1,7 @@
 import { Job } from "@/types/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { invoke } from "@tauri-apps/api/tauri";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -71,4 +72,12 @@ export const findMostFrequentLocation = (jobs: Array<Job>) => {
   }
 
   return mostFrequentLocation;
+};
+
+export const openLinkInBrowser = async (url: string) => {
+  try {
+    await invoke("open_in_browser", { url });
+  } catch (err) {
+    console.error("Failed to open URL:", err);
+  }
 };
