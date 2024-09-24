@@ -78,7 +78,7 @@ export default function Home() {
   const renderContent = () => {
     switch (page) {
       case "main":
-        return <Main />;
+        return <Main setPage={setPage} />;
       case "ai":
         return <Ai />;
       case "planet":
@@ -96,7 +96,6 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen flex bg-neutral-100 dark:bg-gray-950 text-neutral-800 dark:text-white text-sm">
-      {/* <Nav updatePage={setPage} page={page} resetKey={setProductKeyVerified} /> */}
       <div className="w-full h-screen p-4">{renderContent()}</div>
       <CustomDock
         setPage={setPage}
