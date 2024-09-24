@@ -17,6 +17,7 @@ export interface Job {
   schedule: string;
   timestamp: string;
   pinned: number;
+  link: string;
 }
 
 export interface DockProps {
