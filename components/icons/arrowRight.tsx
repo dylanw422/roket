@@ -14,7 +14,7 @@ export function ArrowRight({ className }: IconProps) {
       stroke-linecap="round"
       stroke-linejoin="round"
       className={cn(
-        "icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right w-12 p-1 text-white ml-2 rounded-lg bg-violet-500 h-full",
+        "icon icon-tabler icons-tabler-outline icon-tabler-arrow-narrow-right w-12 p-1 text-white ml-2 rounded-lg bg-red-400 h-full",
         className,
       )}
     >
