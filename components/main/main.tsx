@@ -13,13 +13,17 @@ import { Job } from "@/types/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllJobs, pinningFn } from "@/lib/queryFunctions";
 import { convertToYearlySalary, findMostFrequentLocation } from "@/lib/utils";
+import { Link } from "lucide-react";
+import { openLinkInBrowser } from "@/lib/utils";
+import useProfileData from "@/hooks/profileData";
 
-export default function Main() {
+export default function Main({ setPage }: any) {
   const [pinned, setPinned] = useState<Job[]>([]);
   const [jobsFromDb, setJobsFromDb] = useState<Job[]>([]);
   const [filterCriteria, setFilterCriteria] = useState<string>("");
   const { status, process, captchaImg, captchaProcess, rowsFromSocket } =
     useSocketListeners();
+  const { username, password, jobSearch } = useProfileData();
 
   // Handle pin/unpin operations
   const pinningMutation = useMutation({ mutationFn: pinningFn });
@@ -110,7 +114,12 @@ export default function Main() {
           </div>
         </div>
       ) : null}
-      <h1 className="text-2xl font-medium">Application Board</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-medium">Application Board</h1>
+        <button className="text-xs border px-2 py-1 rounded-md bg-neutral-200 dark:bg-gray-950 text-neutral-500 hover:bg-neutral-200/80">
+          Download CSV
+        </button>
+      </div>
       <div id="info" className="mt-4 flex justify-between">
         <div className="flex space-x-4">
           <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-purple-400 text-purple-500">
@@ -133,14 +142,16 @@ export default function Main() {
         <div className="flex space-x-4">
           <button
             onClick={() => {
-              handleStartTask();
+              username && password && jobSearch
+                ? handleStartTask()
+                : setPage("profile");
             }}
           >
             <AnimatedGradientText className="h-full rounded-lg">
               <span
                 className={`inline animate-gradient bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`}
               >
-                {status}
+                {username && password && jobSearch ? status : "Set Preferences"}
               </span>
             </AnimatedGradientText>
           </button>
@@ -188,6 +199,9 @@ export default function Main() {
                   <button onClick={() => unpin(job)}>
                     <Pin className="text-rose-500" />
                   </button>
+                  <button>
+                    <Link className="w-3 ml-2 text-gray-500" />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -214,6 +228,9 @@ export default function Main() {
                   <button>
                     <Pin className="text-gray-500" />
                   </button>
+                  <button>
+                    <Link className="w-3 ml-2 text-gray-500" />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -239,6 +256,9 @@ export default function Main() {
                 <td>
                   <button onClick={() => pin(job)}>
                     <Pin className="text-gray-500" />
+                  </button>
+                  <button onClick={() => openLinkInBrowser(job.link)}>
+                    <Link className="w-3 ml-2 text-gray-500" />
                   </button>
                 </td>
               </tr>

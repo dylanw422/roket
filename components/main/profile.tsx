@@ -53,6 +53,7 @@ export default function Profile() {
           <div id="un-pw" className="flex flex-col flex-1 space-y-4">
             <input
               onChange={(e) => setUsername(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="p-2 rounded-lg border border-neutral-300 dark:border-gray-800 dark:bg-gray-900 w-full outline-none"
               placeholder="LinkedIn Email"
               value={username}
@@ -114,6 +115,7 @@ export default function Profile() {
                 <SelectItem value="midsenior">Mid-Senior Level</SelectItem>
                 <SelectItem value="director">Director</SelectItem>
                 <SelectItem value="executive">Executive</SelectItem>
+                <SelectItem value="any">Any</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -134,26 +136,6 @@ export default function Profile() {
                 <SelectItem value="140">$140,000+</SelectItem>
                 <SelectItem value="160">$160,000+</SelectItem>
                 <SelectItem value="none">None</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div id="job-type" className="flex items-center justify-between">
-            <h1>Job Type</h1>
-            <Select
-              onValueChange={(value) => setJobType(value)}
-              defaultValue={jobType}
-            >
-              <SelectTrigger className="w-1/2 px-2 text-xs border border-neutral-300 dark:border-gray-800">
-                <SelectValue placeholder="Job Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="full">Full-Time</SelectItem>
-                <SelectItem value="part">Part-Time</SelectItem>
-                <SelectItem value="contract">Contract</SelectItem>
-                <SelectItem value="temp">Temporary</SelectItem>
-                <SelectItem value="volunteer">Volunteer</SelectItem>
-                <SelectItem value="intern">Internship</SelectItem>
               </SelectContent>
             </Select>
           </div>
