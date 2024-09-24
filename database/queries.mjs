@@ -4,10 +4,19 @@ const db = new Database("./database/database.db", { verbose: console.log });
 db.pragma("journal_mode = WAL");
 
 export const insertJob = (job) => {
-  const { title, company, salary, location, schedule, timestamp, pinned } = job;
+  const {
+    title,
+    company,
+    salary,
+    location,
+    schedule,
+    timestamp,
+    pinned,
+    link,
+  } = job;
   const stmt = db.prepare(`
-    INSERT INTO jobs (title, company, salary, location, schedule, timestamp, pinned)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO jobs (title, company, salary, location, schedule, timestamp, pinned, link)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   const info = stmt.run(
@@ -18,6 +27,7 @@ export const insertJob = (job) => {
     schedule,
     timestamp,
     pinned,
+    link,
   );
 
   return { id: info.lastInsertRowid };
