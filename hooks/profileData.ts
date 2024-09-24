@@ -1,6 +1,6 @@
 // hooks/useProfileData.ts
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const useProfileData = () => {
   const [username, setUsername] = useState<string>(() => {
@@ -46,6 +46,15 @@ const useProfileData = () => {
       console.error("Error saving data to localStorage", err);
     }
   };
+
+  useEffect(() => {
+    localStorage.setItem("jobSearch", jobSearch);
+    localStorage.setItem("experience", experience);
+    localStorage.setItem("salary", salary);
+    localStorage.setItem("jobType", jobType);
+    localStorage.setItem("remote", remote);
+    localStorage.setItem("recent", recent);
+  }, [jobSearch, experience, salary, jobType, remote, recent]);
 
   return {
     username,
