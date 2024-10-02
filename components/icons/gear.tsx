@@ -5,8 +5,6 @@ export function Gear({ className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -14,7 +12,7 @@ export function Gear({ className }: IconProps) {
       stroke-linecap="round"
       stroke-linejoin="round"
       className={cn(
-        `w-5 icon icon-tabler icons-tabler-outline icon-tabler-settings`,
+        `w-5 h-5 icon icon-tabler icons-tabler-outline icon-tabler-settings`,
         className,
       )}
     >
