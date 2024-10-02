@@ -109,8 +109,8 @@ export async function jobFinder(
   const jobCardCount = await jobCards.count();
   console.log("jobs cards", jobCardCount);
 
-  for (let i = 0; i < 1; i++) {
-    const jobSection = jobCards.nth(i);
+  for (let i = 0; i < 100; i++) {
+    const jobSection = jobCards.nth(i % 25);
     const jobSectionId = await jobSection.getAttribute(
       "data-occludable-job-id",
     );
@@ -118,7 +118,12 @@ export async function jobFinder(
     const jobSectionDiv = await jobSection.locator(
       ".job-card-container--clickable",
     );
+
     await jobSectionDiv.click();
+
+    await page
+      .locator(".jobs-search-results-list")
+      .evaluate((e) => (e.scrollTop += 100));
 
     // SAVE JOB DETAILS
     let jobTitle = await page.textContent(".t-24.t-bold.inline");
@@ -242,6 +247,12 @@ export async function jobFinder(
     closeBtn = await page.locator("[aria-label='Dismiss']").first();
     if (await closeBtn.isVisible()) {
       await closeBtn.click();
+    }
+
+    // AFTER 25 JOBS, CLICK NEXT PAGE
+    if (i % 24 === 0) {
+      await page.locator("button[aria-label='View next page']").click();
+      await page.waitForTimeout(5000);
     }
   }
 }

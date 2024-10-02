@@ -53,10 +53,10 @@ export default async function LinkedInApply(
     );
 
     // Optionally close browser after a delay
-    // setTimeout(async () => {
-    //   await browser.close();
-    //   socket.emit("stopped");
-    // }, 3000);
+    setTimeout(async () => {
+      await browser.close();
+      socket.emit("stopped");
+    }, 3000);
   } catch (err) {
     console.error("LinkedInApply Error: ", err);
     socket.emit("stopped");
