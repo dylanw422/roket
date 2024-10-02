@@ -2,6 +2,8 @@ import { Job } from "@/types/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { invoke } from "@tauri-apps/api/tauri";
+import { writeTextFile } from "@tauri-apps/api/fs";
+import { save } from "@tauri-apps/api/dialog";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -79,5 +81,40 @@ export const openLinkInBrowser = async (url: string) => {
     await invoke("open_in_browser", { url });
   } catch (err) {
     console.error("Failed to open URL:", err);
+  }
+};
+
+export const createCsv = async (data: any) => {
+  if (data.length === 0) return;
+
+  console.log(data);
+
+  const headers = Object.keys(data[0]);
+  console.log(headers);
+
+  const csvRows = [
+    headers.join(","),
+    ...data.map((row: any) => {
+      return headers
+        .map((header) => {
+          const value = row[header] || "";
+          const escaped = `"${String(value).replace(/"/g, '""')}"`;
+          return escaped;
+        })
+        .join(",");
+    }),
+  ];
+
+  const csvString = csvRows.join("\n");
+
+  const filePath = await save({
+    defaultPath: "jobs.csv",
+    filters: [{ name: "CSV", extensions: ["csv"] }],
+  });
+
+  if (filePath) {
+    await writeTextFile(filePath, csvString);
+  } else {
+    console.error("Failed to save file");
   }
 };
