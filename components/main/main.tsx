@@ -66,7 +66,7 @@ export default function Main({ setPage }: any) {
   const { data } = useQuery({ queryKey: ["jobs"], queryFn: getAllJobs });
 
   useEffect(() => {
-    setJobsFromDb(data?.slice(0, 200).filter((job: Job) => job.pinned === 0));
+    setJobsFromDb(data?.slice(0, 500).filter((job: Job) => job.pinned === 0));
     setPinned(data?.filter((job: Job) => job.pinned === 1));
   }, [data]);
 
