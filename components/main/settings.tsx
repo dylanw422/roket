@@ -9,6 +9,7 @@ import {
 } from "../ui/select";
 import { Switch } from "../ui/switch";
 import { Shortcut } from "../ui/shortcut";
+import { Gear } from "../icons/gear";
 
 export default function Settings() {
   const [isMac, setIsMac] = useState(false);

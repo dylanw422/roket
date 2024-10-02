@@ -14,7 +14,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllJobs, pinningFn } from "@/lib/queryFunctions";
 import { convertToYearlySalary, findMostFrequentLocation } from "@/lib/utils";
 import { Link } from "lucide-react";
-import { openLinkInBrowser } from "@/lib/utils";
+import { openLinkInBrowser, createCsv } from "@/lib/utils";
 import useProfileData from "@/hooks/profileData";
 
 export default function Main({ setPage }: any) {
@@ -116,14 +116,17 @@ export default function Main({ setPage }: any) {
       ) : null}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-medium">Application Board</h1>
-        <button className="text-xs border px-2 py-1 rounded-md bg-neutral-200 dark:bg-gray-950 text-neutral-500 hover:bg-neutral-200/80">
+        <button
+          onClick={async () => await createCsv(jobsFromDb ? jobsFromDb : [])}
+          className="text-xs border px-2 py-1 rounded-md bg-neutral-200 dark:bg-gray-950 text-neutral-500 hover:bg-neutral-200/80"
+        >
           Download CSV
         </button>
       </div>
       <div id="info" className="mt-4 flex justify-between">
         <div className="flex space-x-4">
           <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-purple-400 text-purple-500">
-            {data?.length} Applications
+            {data?.length + rowsFromSocket.length} Applications
           </h1>
           <h1 className="px-4 py-2 rounded-lg bg-white dark:bg-gray-900 border border-pink-400 text-pink-500">
             $
@@ -199,7 +202,7 @@ export default function Main({ setPage }: any) {
                   <button onClick={() => unpin(job)}>
                     <Pin className="text-rose-500" />
                   </button>
-                  <button>
+                  <button onClick={() => openLinkInBrowser(job.link)}>
                     <Link className="w-3 ml-2 text-gray-500" />
                   </button>
                 </td>
@@ -228,7 +231,7 @@ export default function Main({ setPage }: any) {
                   <button>
                     <Pin className="text-gray-500" />
                   </button>
-                  <button>
+                  <button onClick={() => openLinkInBrowser(job.link)}>
                     <Link className="w-3 ml-2 text-gray-500" />
                   </button>
                 </td>
