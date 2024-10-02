@@ -14,7 +14,7 @@ export function Sun({ className }: IconProps) {
       stroke-linecap="round"
       stroke-linejoin="round"
       className={cn(
-        "w-5 icon icon-tabler icons-tabler-outline icon-tabler-sun",
+        "w-6 icon icon-tabler icons-tabler-outline icon-tabler-sun",
         className,
       )}
     >

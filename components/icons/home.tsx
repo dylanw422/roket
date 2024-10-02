@@ -12,7 +12,7 @@ export function Home({ className }: IconProps) {
       stroke-linecap="round"
       stroke-linejoin="round"
       className={cn(
-        "w-5 icon icon-tabler icons-tabler-outline icon-tabler-home",
+        "w-6 icon icon-tabler icons-tabler-outline icon-tabler-home",
         className,
       )}
     >

@@ -8,11 +8,11 @@ export function Gear({ className }: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      stroke-width="2"
+      stroke-width="1.5"
       stroke-linecap="round"
       stroke-linejoin="round"
       className={cn(
-        `w-5 h-5 icon icon-tabler icons-tabler-outline icon-tabler-settings`,
+        `w-6 h-6 icon icon-tabler icons-tabler-outline icon-tabler-settings`,
         className,
       )}
     >

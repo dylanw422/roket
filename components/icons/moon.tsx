@@ -10,7 +10,7 @@ export function Moon({ className }: IconProps) {
       viewBox="0 0 24 24"
       fill="currentColor"
       className={cn(
-        "w-4 icon icon-tabler icons-tabler-filled icon-tabler-moon",
+        "w-5 icon icon-tabler icons-tabler-filled icon-tabler-moon",
         className,
       )}
     >
