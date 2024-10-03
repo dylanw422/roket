@@ -16,12 +16,20 @@ export default async function LinkedInApply(
   try {
     // BROWSER START
     const browser = await chromium.launch({
-      headless: false,
+      headless: true,
       slowMo: 500,
     });
     const context = await browser.newContext(devices["Desktop Chrome"]);
     const page = await context.newPage();
     socket.emit("running");
+
+    socket.on("stop", async () => {
+      if (browser) {
+        await browser.close();
+        socket.emit("stopped", "Service stopped by user.");
+        return;
+      }
+    });
 
     // GO TO LINKEDIN & LOGIN
     await page.goto("https://www.linkedin.com/login");
