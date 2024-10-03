@@ -146,7 +146,9 @@ export default function Main({ setPage }: any) {
           <button
             onClick={() => {
               username && password && jobSearch
-                ? handleStartTask()
+                ? status === "Running..."
+                  ? null
+                  : handleStartTask()
                 : setPage("profile");
             }}
           >
