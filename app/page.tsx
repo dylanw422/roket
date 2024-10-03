@@ -10,6 +10,7 @@ import { socket } from "@/socket";
 import { useTheme } from "next-themes";
 import { startTask } from "@/hooks/socketService";
 import { CustomDock } from "@/components/customDock";
+import axios from "axios";
 
 export default function Home() {
   const [page, setPage] = useState("main");
@@ -54,6 +55,10 @@ export default function Home() {
         console.log(theme);
       }
 
+      if (e.metaKey && e.key === "z") {
+        socket.emit("stop");
+      }
+
       if (e.metaKey && e.key === "s") {
         startTask(
           localStorage.getItem("LinkedInUsername"),
@@ -89,6 +94,21 @@ export default function Home() {
         return <Settings />;
     }
   };
+
+  useEffect(() => {
+    const verifyKey = async () => {
+      try {
+        const res = await axios.post("/api/verifyKey", {});
+        if (res.data.success) {
+          setProductKeyVerified(true);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    verifyKey();
+  }, []);
 
   if (!productKeyVerified) {
     return <Locked setProductKeyVerified={setProductKeyVerified} />;
