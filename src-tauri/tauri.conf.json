@@ -7,8 +7,8 @@
     "distDir": "../out"
   },
   "package": {
-    "productName": "roket_electron",
-    "version": "0.1.0"
+    "productName": "Roket",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
