@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nodemon server.mjs",
     "build": "next build",
+    "postbuild": "rm -rf .next/standalone/node_modules && rm -f .next/standalone/package.json && rm -f .next/standalone/server.js",
     "start": "NODE_ENV=production node server.mjs",
     "lint": "next lint",
     "tauri": "tauri"
