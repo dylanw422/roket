@@ -31,7 +31,13 @@
         "depends": []
       },
       "externalBin": [],
-      "icon": ["icons/RoketLogo.png", "icons/RoketLogo.ico"],
+      "icon": [
+        "icons/Roket32x32.png",
+        "icons/Roket128x128.png",
+        "icons/Roket256x256.png",
+        "icons/Rocket Holding Logo.icns",
+        "icons/RocketLogo.ico"
+      ],
       "identifier": "com.roket.roketapp",
       "longDescription": "",
       "macOS": {
