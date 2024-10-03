@@ -28,6 +28,7 @@ export default function Settings() {
         <h1 className="text-xl font-bold">Keyboard Shortcuts</h1>
         <Shortcut isMac={isMac} func={"Toggle Night Mode"} shortcut={"N"} />
         <Shortcut isMac={isMac} func={"Start Service"} shortcut={"S"} />
+        <Shortcut isMac={isMac} func={"Stop Service"} shortcut={"Z"} />
       </div>
     </div>
   );
