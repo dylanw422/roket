@@ -98,7 +98,9 @@ export default function Home() {
   useEffect(() => {
     const verifyKey = async () => {
       try {
-        const res = await axios.post("/api/verifyKey", {});
+        const res = await axios.post("/api/verifyKey", {
+          key: localStorage.getItem("productKey"),
+        });
         if (res.data.success) {
           setProductKeyVerified(true);
         }

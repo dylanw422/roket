@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight } from "../icons/arrowRight";
 import axios from "axios";
-import { useToast } from "@/hooks/use-toast";
 
 export default function Locked({
   setProductKeyVerified,
@@ -12,17 +11,18 @@ export default function Locked({
 }) {
   const [productKey, setProductKey] = useState("");
   const [error, setError] = useState<string | null>();
-  const { toast } = useToast();
+  const [isVisible, setIsVisible] = useState(true);
 
   const verifyKey = async () => {
     const response = await axios.post("/api/verifyKey", { key: productKey });
+    localStorage.setItem("productKey", productKey);
     if (response.data.success) {
       setProductKeyVerified(true);
     } else {
-      console.log(response.data.error);
       setError(response.data.error);
+      setIsVisible(true);
       setTimeout(() => {
-        setError(null);
+        setIsVisible(false);
       }, 5000);
     }
   };
@@ -41,7 +41,7 @@ export default function Locked({
         </button>
         {error && (
           <div
-            className={`text-white absolute bottom-0 right-0 m-4 w-1/5 text-sm bg-red-500 p-3 rounded-sm`}
+            className={`absolute bottom-0 right-0 m-4 w-1/5 text-sm dark:bg-gray-900 shadow-md shadow-black border border-red-400 p-3 rounded-sm ${isVisible ? "animate-slideIn" : "animate-slideOut"}`}
           >
             <h1 className="font-bold">Error</h1>
             <p>{error}</p>
