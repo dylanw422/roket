@@ -69,7 +69,8 @@
         "height": 800,
         "resizable": true,
         "title": "Roket",
-        "width": 1400
+        "width": 1400,
+        "devTools": true
       }
     ]
   }
